@@ -72,6 +72,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				} else {
 					console.log("register successful");
 				}
+				$('#registerModal').modal('hide');
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
