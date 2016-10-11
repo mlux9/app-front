@@ -73,6 +73,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 					console.log("register successful");
 				}
 				$('#registerModal').modal('hide');
+				updateUserList();
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -94,6 +95,20 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				} else {
 					console.log("Book creation successful");
 				}
+				$('#addBookModal').modal('hide');
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		};
+
+		// Delete book
+		$scope.deleteBook = function(book_id) {
+			$http({
+				method: 'GET',
+				url: 'http://bookswapp.apps.mlux.me/api/books/delete'+book_id
+			}).then(function successCallback(response) {
+				var res = response.data;
+				$('#addBookModal').modal('hide');
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -119,26 +134,50 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			console.log('Errored out: ' + JSON.stringify(response));
 		});
 
+		$scope.updateUserList = function() {
+			$http({
+				method: 'GET',
+				url: 'http://bookswapp.apps.mlux.me/api/user/list'
+			}).then(function successCallback(response) {
+				$scope.userList = response.data;
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		}
+
+		$scope.updateBookList = function() {
+			$http({
+				method: 'GET',
+				url: 'http://bookswapp.apps.mlux.me/api/books/list/all'
+			}).then(function successCallback(response) {
+				$scope.books = response.data;
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		}
+
 		// Getting book listings
 		$http({
 			method: 'GET',
 			url: 'http://bookswapp.apps.mlux.me/api/listings'
 		}).then(function successCallback(response) {
 			$scope.listings = response.data;
+			// console.log(response.data);
 		}, function errorCallback(response) {
 			console.log('Errored out: ' + JSON.stringify(response));
 		});
 
-		// $scope.getBook = function(book_id) {
-		// 	$http({
-		// 		method: 'GET',
-		// 		url: 'http://bookswapp.apps.mlux.me/api/books/'+book_id
-		// 	}).then(function successCallback(response) {
-		// 		$scope.book = response.data;
-		// 	}, function errorCallback(response) {
-		// 		console.log('Errored out: ' + JSON.stringify(response));
-		// 	});
-		// };
+		$scope.book = {};
+		$scope.getBook = function(book_id) {
+			$http({
+				method: 'GET',
+				url: 'http://bookswapp.apps.mlux.me/api/books/'+book_id
+			}).then(function successCallback(response) {
+				$scope.bookData = response.data;
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		};
 
 		$scope.selectedType = 'selling';
 
@@ -166,6 +205,10 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 
 		$scope.showAddBookModal = function(func) {
 			$('#addBookModal').modal();
+		}
+
+		$scope.showBookDetailsModal = function(func) {
+			$('#bookDetailsModal').modal('show');
 		}
 	}
 ]);
