@@ -6,35 +6,6 @@ var bookSwapp = angular.module('bookSwapp', [ 'ui.bootstrap', 'ngAnimate' ]);
 bookSwapp.controller('homeCtrl', ['$scope', '$http',
 	function($scope, $http) {
 
-		// @TODO this will be fetched from the server via an API call
-		// currently is just hardcoded test data
-
-		/*
-		$scope.listings = [
-			{
-				id: 1,
-				name: 'Business 101',
-				price: 5.00,
-				location: 'UNSW',
-				type: 'Wanted' // @TODO determine codes instead of string for wanted / selling / swap
-			},
-			{
-				id: 2,
-				name: 'Python Programming',
-				price: 15.00,
-				location: 'UTS',
-				type: 'Selling'
-			},
-			{
-				id: 3,
-				name: 'Business 101',
-				price: 5.00,
-				location: 'Bankstown',
-				type: 'Swap'
-			}
-		];
-		*/
-
 		// Login
 		$scope.loginForm = {};
 		$scope.processLogin = function() {
@@ -45,12 +16,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
 				var res = response.data;
-				console.log(response);
-				if (res.hasOwnProperty('error')) {
-					console.log("login failed");
-				} else {
-					console.log("login successful");
-				}
+				console.log(res);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -67,11 +33,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			}).then(function successCallback(response) {
 				var res = response.data;
 				console.log(response);
-				if (res.hasOwnProperty('error')) {
-					console.log("register failed");
-				} else {
-					console.log("register successful");
-				}
 				$scope.updateUserList();
 				$('#registerModal').modal('hide');				
 			}, function errorCallback(response) {
@@ -89,12 +50,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
 				var res = response.data;
-				console.log(response);
-				if (res.hasOwnProperty('error')) {
-					console.log("Not logged in");
-				} else {
-					console.log("Book creation successful");
-				}
 				$scope.updateBookList();
 				$('#addBookModal').modal('hide');
 			}, function errorCallback(response) {
@@ -110,7 +65,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			}).then(function successCallback(response) {
 				var res = response.data;
 				$scope.updateBookList();
-				// $('#addBookModal').modal('hide');
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -123,7 +77,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 		}).then(function successCallback(response) {
 			$scope.allBooks = response.data;
 			$scope.selectedBookList = $scope.allBooks;
-			console.log($scope.selectedBookList);
 		}, function errorCallback(response) {
 			console.log('Errored out: ' + JSON.stringify(response));
 		});
@@ -155,7 +108,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				url: 'http://bookswapp.apps.mlux.me/api/books/list/all'
 			}).then(function successCallback(response) {
 				$scope.allBooks = response.data;
-				console.log($scope.books);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -167,19 +119,17 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			url: 'http://bookswapp.apps.mlux.me/api/listings'
 		}).then(function successCallback(response) {
 			$scope.listings = response.data;
-			// console.log(response.data);
 		}, function errorCallback(response) {
 			console.log('Errored out: ' + JSON.stringify(response));
 		});
 
-		$scope.bookData = {};
 		$scope.getBook = function(book_id) {
 			$http({
 				method: 'GET',
 				url: 'http://bookswapp.apps.mlux.me/api/books/'+book_id
 			}).then(function successCallback(response) {
 				$scope.bookData = response.data;
-				console.log($scope.bookData);
+				console.log("Book data");
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
