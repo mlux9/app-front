@@ -47,8 +47,9 @@
 
     <!-- Breadcrumbs -->
     <ol class="breadcrumb pull-right">
-      <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'selling') }"><a href="#" ng-click="selectType('selling')">Selling</a></li>
-      <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'wanted') }"><a href="#" ng-click="selectType('wanted')">Wanted</a></li>
+      <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'all') }"><a href="#" ng-click="selectType('all')">All</a></li>
+      <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'sell') }"><a href="#" ng-click="selectType('sell')">Selling</a></li>
+      <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'buy') }"><a href="#" ng-click="selectType('buy')">Wanted</a></li>
       <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'swap') }"><a href="#" ng-click="selectType('swap')">Swap</a></li>
     </ol>
 
@@ -75,12 +76,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="book in books">
+        <tr ng-repeat="book in selectedBookList">
           <td>{{ book['book_id'] }}</td>
           <td><a data-toggle="modal" ng-click="getBook(book['book_id']); showBookDetailsModal()">{{ book['name'] }}</td>
           <td>${{ book['price'] | number : 2 }}</td>
           <td>{{ book['status'] }}</td>
           <td>{{ book['trans_type'] }}</td>
+          <td><button type="button" class="btn btn-danger btn-sm" ng-click="deleteBook(book['book_id'])">Delete</button></td>
         </tr>
       </tbody>
     </table>

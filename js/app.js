@@ -72,8 +72,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				} else {
 					console.log("register successful");
 				}
-				$('#registerModal').modal('hide');
-				updateUserList();
+				$scope.updateUserList();
+				$('#registerModal').modal('hide');				
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -95,6 +95,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				} else {
 					console.log("Book creation successful");
 				}
+				$scope.updateBookList();
 				$('#addBookModal').modal('hide');
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
@@ -105,10 +106,11 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 		$scope.deleteBook = function(book_id) {
 			$http({
 				method: 'GET',
-				url: 'http://bookswapp.apps.mlux.me/api/books/delete'+book_id
+				url: 'http://bookswapp.apps.mlux.me/api/books/delete/'+book_id
 			}).then(function successCallback(response) {
 				var res = response.data;
-				$('#addBookModal').modal('hide');
+				$scope.updateBookList();
+				// $('#addBookModal').modal('hide');
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -119,8 +121,9 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			method: 'GET',
 			url: 'http://bookswapp.apps.mlux.me/api/books/list/all'
 		}).then(function successCallback(response) {
-			$scope.books = response.data;
-			console.log($scope.books);
+			$scope.allBooks = response.data;
+			$scope.selectedBookList = $scope.allBooks;
+			console.log($scope.selectedBookList);
 		}, function errorCallback(response) {
 			console.log('Errored out: ' + JSON.stringify(response));
 		});
@@ -151,7 +154,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				method: 'GET',
 				url: 'http://bookswapp.apps.mlux.me/api/books/list/all'
 			}).then(function successCallback(response) {
-				$scope.books = response.data;
+				$scope.allBooks = response.data;
 				console.log($scope.books);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
@@ -182,10 +185,26 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			});
 		};
 
-		$scope.selectedType = 'selling';
+		$scope.selectedType = 'all';
+
+		// Book list filtering
+		$scope.updateSelectedBookList = function(type) {
+			if (type === 'all') {
+				$scope.selectedBookList = $scope.allBooks;
+			} else {
+				$scope.selectedBookList = [];
+				for (var i = 0; i < ($scope.allBooks).length; i++) {
+					var book = $scope.allBooks[i];
+					if (book['trans_type'] === type) {
+						($scope.selectedBookList).push(book);
+					}
+				}
+			}
+		}
 
 		$scope.selectType = function(type) {
 			$scope.selectedType = type;
+			$scope.updateSelectedBookList(type);
 		};
 
 		$scope.showUserTable = function(func) {
