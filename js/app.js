@@ -120,6 +120,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			url: 'http://bookswapp.apps.mlux.me/api/books/list/all'
 		}).then(function successCallback(response) {
 			$scope.books = response.data;
+			console.log($scope.books);
 		}, function errorCallback(response) {
 			console.log('Errored out: ' + JSON.stringify(response));
 		});
@@ -151,6 +152,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				url: 'http://bookswapp.apps.mlux.me/api/books/list/all'
 			}).then(function successCallback(response) {
 				$scope.books = response.data;
+				console.log($scope.books);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -167,13 +169,14 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			console.log('Errored out: ' + JSON.stringify(response));
 		});
 
-		$scope.book = {};
+		$scope.bookData = {};
 		$scope.getBook = function(book_id) {
 			$http({
 				method: 'GET',
 				url: 'http://bookswapp.apps.mlux.me/api/books/'+book_id
 			}).then(function successCallback(response) {
 				$scope.bookData = response.data;
+				console.log($scope.bookData);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
