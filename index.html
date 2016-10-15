@@ -65,8 +65,12 @@
       <span class="glyphicon glyphicon-plus-sign"></span> Add book
     </button>
     <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showUpdateUserModal()">
-      <span class="glyphicon glyphicon-user"></span> Update User
+      <span class="glyphicon glyphicon-user"></span> User
     </button>
+    <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showMyListingsModal()">
+      <span class="glyphicon glyphicon-user"></span> My Listings
+    </button>
+
 
     <div ng-if="showSomething">ofdignsfdoigsn</div>
 
@@ -120,15 +124,18 @@
     <table class="table table-bordered table-hover" id="bookListTable">
       <thead class="table-head">
         <tr>
+          <td>Listing ID</td>
           <td>Book ID</td>
           <td>User ID</td>
-          <td>Test</td>
+          <td>Date listed</td>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="listing in listings">
-          <td ng-click="getBook(listing['book_id'])">{{ listing['book_id'] }}</td>
+          <td>{{ listing['listing_id'] }}</td>
+          <td>{{ listing['book_id'] }}</td>
           <td>{{ listing['user_id'] }}</td>
+          <td>{{ listing['date'] }}</td>
           <!-- <td>{{ getBook(1) }} </td> -->
         </tr>
       </tbody>
@@ -407,12 +414,29 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Update User Details</h4>
+          <h4 class="modal-title">User Details</h4>
         </div>
         <div class="modal-body">
-
+          <strong>Current details</strong>
+          <table class="table table-bordered table-hover">
+            <tbody>
+              <tr>
+                <th width="20%">Email</th>
+                <td>{{ userData['email'] }}</td>
+              </tr>
+              <tr>
+                <th width="20%">University</th>
+                <td>{{ userData['university'] }}</td>
+              </tr>
+              <tr>
+                <th width="20%">Location</th>
+                <td>{{ userData['location'] }}</td>
+              </tr>
+            </tbody>
+          </table>
+          
           <form ng-submit="updateUser()">
-
+            <strong>Update details</strong>
             <div class="form-group">
               <label for="user_id">User ID - Remove when Login is implemented properly</label>
               <input type="text" class="form-control" id="user_id" ng-model="updateUser.user_id">
@@ -446,6 +470,42 @@
     </div>
   </div>
   <!-- End of Update User modal -->
+
+  <!-- My Listings modal -->
+  <div class="modal fade" id="myListingsModal">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">My Listings</h4>
+        </div>
+        <div class="modal-body">
+
+          <table class="table table-bordered table-hover">
+            <thead class="table-head">
+              <tr>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="book in userBookList">
+                <td>{{ book['name'] }}</a></td>
+                <td>Buttons</td>
+              </tr>
+            </tbody>
+          </table>
+          
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!-- End of My Listings modal -->
 
 </body>
 

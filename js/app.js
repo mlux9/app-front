@@ -164,6 +164,18 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			});
 		};
 
+		$scope.getUser = function(user_id) {
+			$scope.userData = {};
+			$http({
+				method: 'GET',
+				url: 'http://bookswapp.apps.mlux.me/api/user/'+user_id
+			}).then(function successCallback(response) {
+				$scope.userData = response.data;
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		}
+
 		$scope.selectedType = 'all';
 
 		// Book list filtering
@@ -181,14 +193,40 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			}
 		}
 
+		$scope.getBooksByUser = function(user_id) {
+			$scope.userBookList = [];
+			for (var i = 0; i < ($scope.listings).length; i++) {
+				var book = $scope.listings[i];
+				if (book['user_id'] === user_id) {
+					// console.log("My book: " + book['book_id']);
+					// $scope.getBook(book['book_id']);
+					// console.log("My book data: ");
+					// console.log($scope.bookData);
+					var res = $scope.getBookById(book['book_id']);
+					console.log(res);
+					($scope.userBookList).push(res);
+				}
+			}
+		}
+
+		$scope.getBookById = function(book_id) {
+			for (var i = 0; i < ($scope.allBooks).length; i++) {
+				var book = $scope.allBooks[i];
+				if (book['book_id'] === book_id) {
+					return book;
+				}
+			}
+		}
+
 		$scope.updateUserForm = {};
 		$scope.updateUser = function() {
-			var user_id = $scope.updateUser.user_id;
+			var user_id = $scope.currentUser.user_id;
 			// if (!$scope.isLoggedIn()) {
 			// 	var user_id = 0;
 			// } else {
 			// 	var user_id = $scope.currentUser.user_id;
 			// }
+
 			$http({
 				method: 'POST',
 				url: 'http://bookswapp.apps.mlux.me/api/user/update/'+user_id,
@@ -261,7 +299,13 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 		}
 
 		$scope.showUpdateUserModal = function(func) {
+			$scope.getUser($scope.currentUser.user_id);
 			$('#updateUserModal').modal();
+		}
+
+		$scope.showMyListingsModal = function(func) {
+			$scope.getBooksByUser($scope.currentUser.user_id);
+			$('#myListingsModal').modal();
 		}
 	}
 ]);
