@@ -36,10 +36,17 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 					$scope.currentUser.logged_in = true;
 					console.log($scope.currentUser);
 				}
+				$('#loginModal').modal('hide');		
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
 		};
+
+		$scope.processLogout = function() {
+			$scope.currentUser.user_id = "";
+			$scope.currentUser.email = "";
+			$scope.currentUser.logged_in = false;
+		}
 
 		// Registration
 		$scope.registerForm = {};
