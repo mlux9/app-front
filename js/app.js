@@ -3,8 +3,8 @@
  */
 var bookSwapp = angular.module('bookSwapp', [ 'ui.bootstrap', 'ngAnimate' ]);
 
-bookSwapp.controller('homeCtrl', ['$scope', '$http', '$modal',
-	function($scope, $http, $modal) {
+bookSwapp.controller('homeCtrl', ['$scope', '$http', 
+	function($scope, $http) {
 
 		// User account - totally insecure, for testing
 		$scope.currentUser = {
@@ -144,13 +144,14 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$modal',
 		});
 
 		$scope.getBook = function(book_id) {
+			$scope.bookData = {};
 			$http({
 				method: 'GET',
 				url: 'http://bookswapp.apps.mlux.me/api/books/'+book_id
 			}).then(function successCallback(response) {
 				$scope.bookData = response.data;
-				console.log("getBook called");
-				console.log($scope.bookData);
+				// console.log("getBook called");
+				// console.log($scope.bookData);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -238,20 +239,18 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$modal',
 			$('#addBookModal').modal();
 		}
 
-		$scope.showBookDetailsModal = function(book_id) {
-			$scope.getBook(book_id);
-			console.log("THIS ONE ");
-			console.log($scope.bookData);
-
-			$modal.open({
-				templateUrl: 'bookData.html',
-				controller: 'modalController',
-				scope: $scope
-			});
-
-			// $('#bookDetailsModal').modal('show');
-			// console.log("Checking scope...");
+		$scope.showBookDetailsModal = function() {
+			// $scope.getBook(book_id);
+			// console.log("THIS ONE ");
 			// console.log($scope.bookData);
+
+			// $modal.open({
+			// 	templateUrl: 'bookData.html',
+			// 	controller: 'modalController',
+			// 	scope: $scope
+			// });
+
+			$('#bookDetailsModal').modal('show');
 		}
 
 		$scope.showUpdateUserModal = function(func) {
@@ -260,9 +259,9 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$modal',
 	}
 ]);
 
-bookSwapp.controller('modalController', ['$scope', function($scope) {
+// bookSwapp.controller('modalController', ['$scope', function($scope) {
     
-}]);
+// }]);
 
 $(document).ready(function() {
     $("#userTable").hide();
