@@ -50,6 +50,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
 				var res = response.data;
+				$scope.clearForm($scope.addBookForm);
 				$scope.updateBookList();
 				$('#addBookModal').modal('hide');
 			}, function errorCallback(response) {
@@ -152,6 +153,39 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			}
 		}
 
+		$scope.updateUserForm = {};
+		$scope.updateUser = function() {
+			var user_id = $scope.updateUser.user_id;
+			$http({
+				method: 'POST',
+				url: 'http://bookswapp.apps.mlux.me/api/user/update/'+user_id,
+				data: $.param($scope.updateUserForm),
+				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+			}).then(function successCallback(response) {
+				var res = response.data;
+				// $scope.updateBookList();
+				// Update user details modal when implemented ?
+				console.log(res);
+				$scope.updateUserList();
+
+				// Clear form
+				$scope.updateUser.user_id = "";
+				$scope.clearForm($scope.updateUserForm);
+
+				$('#updateUserModal').modal('hide');
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		};
+
+		$scope.clearForm = function(formObject) {
+			for (field in formObject) {
+				if (formObject.hasOwnProperty(field)) {
+					formObject[field] = "";
+				}
+			}
+		}
+
 		$scope.selectType = function(type) {
 			$scope.selectedType = type;
 			$scope.updateSelectedBookList(type);
@@ -181,6 +215,10 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 
 		$scope.showBookDetailsModal = function(func) {
 			$('#bookDetailsModal').modal('show');
+		}
+
+		$scope.showUpdateUserModal = function(func) {
+			$('#updateUserModal').modal();
 		}
 	}
 ]);
