@@ -3,8 +3,21 @@
  */
 var bookSwapp = angular.module('bookSwapp', [ 'ui.bootstrap', 'ngAnimate' ]);
 
-bookSwapp.controller('homeCtrl', ['$scope', '$http',
-	function($scope, $http) {
+bookSwapp.controller('homeCtrl', ['$scope', '$http', '$modal',
+	function($scope, $http, $modal) {
+
+		// User account - totally insecure, for testing
+		$scope.currentUser = {
+			user_id: "",
+			email: "",
+			logged_in: false
+		};
+
+		$scope.isLoggedIn = function() {
+			return $scope.currentUser.logged_in;
+		}
+
+		$scope.bookData = {};
 
 		// Login
 		$scope.loginForm = {};
@@ -17,6 +30,12 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			}).then(function successCallback(response) {
 				var res = response.data;
 				console.log(res);
+				if (res.hasOwnProperty('message')) {
+					$scope.currentUser.user_id = res.user_id;
+					$scope.currentUser.email = res.email;
+					$scope.currentUser.logged_in = true;
+					console.log($scope.currentUser);
+				}
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -130,7 +149,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				url: 'http://bookswapp.apps.mlux.me/api/books/'+book_id
 			}).then(function successCallback(response) {
 				$scope.bookData = response.data;
-				console.log("Book data");
+				console.log("getBook called");
+				console.log($scope.bookData);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -156,6 +176,11 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 		$scope.updateUserForm = {};
 		$scope.updateUser = function() {
 			var user_id = $scope.updateUser.user_id;
+			// if (!$scope.isLoggedIn()) {
+			// 	var user_id = 0;
+			// } else {
+			// 	var user_id = $scope.currentUser.user_id;
+			// }
 			$http({
 				method: 'POST',
 				url: 'http://bookswapp.apps.mlux.me/api/user/update/'+user_id,
@@ -213,8 +238,20 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			$('#addBookModal').modal();
 		}
 
-		$scope.showBookDetailsModal = function(func) {
-			$('#bookDetailsModal').modal('show');
+		$scope.showBookDetailsModal = function(book_id) {
+			$scope.getBook(book_id);
+			console.log("THIS ONE ");
+			console.log($scope.bookData);
+
+			$modal.open({
+				templateUrl: 'bookData.html',
+				controller: 'modalController',
+				scope: $scope
+			});
+
+			// $('#bookDetailsModal').modal('show');
+			// console.log("Checking scope...");
+			// console.log($scope.bookData);
 		}
 
 		$scope.showUpdateUserModal = function(func) {
@@ -222,6 +259,10 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 		}
 	}
 ]);
+
+bookSwapp.controller('modalController', ['$scope', function($scope) {
+    
+}]);
 
 $(document).ready(function() {
     $("#userTable").hide();

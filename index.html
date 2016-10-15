@@ -80,7 +80,7 @@
       <tbody>
         <tr ng-repeat="book in selectedBookList">
           <td>{{ book['book_id'] }}</td>
-          <td><a data-toggle="modal" ng-click="getBook(book['book_id']); showBookDetailsModal()">{{ book['name'] }}</td>
+          <td><a data-toggle="modal" ng-click="showBookDetailsModal(book['book_id'])">{{ book['name'] }}</td>
           <td>${{ book['price'] | number : 2 }}</td>
           <td>{{ book['status'] }}</td>
           <td>{{ book['trans_type'] }}</td>
@@ -296,7 +296,7 @@
   <!-- End of Add book modal -->
 
   <!-- Show book modal -->
-  <div class="modal fade" id="bookDetailsModal">
+  <div class="modal fade" id="bookDetailsModal" ng-controller="homeCtrl">
     <div class="modal-dialog">
     
       <!-- Modal content-->
