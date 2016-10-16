@@ -61,14 +61,15 @@
       <button type="button" class="btn btn-default" ng-click="showBookListTable()">Book List</button>
     </div>
 
-    <button type="button" class="btn btn-success" ng-click="showAddBookModal()">
+    <strong ng-if="!isLoggedIn()">Not logged in</strong>
+    <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showAddBookModal()">
       <span class="glyphicon glyphicon-plus-sign"></span> Add book
     </button>
     <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showUpdateUserModal()">
       <span class="glyphicon glyphicon-user"></span> User
     </button>
     <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showMyListingsModal()">
-      <span class="glyphicon glyphicon-user"></span> My Listings
+      <span class="glyphicon glyphicon-bookmark"></span> My Listings
     </button>
 
 
@@ -93,7 +94,7 @@
           <td>${{ book['price'] | number : 2 }}</td>
           <td>{{ book['status'] }}</td>
           <td>{{ book['trans_type'] }}</td>
-          <td><button type="button" class="btn btn-danger btn-sm" ng-click="deleteBook(book['book_id'])">Delete</button></td>
+          <td><button ng-if="isMyBook(book['book_id'])" type="button" class="btn btn-danger btn-sm" ng-click="deleteBook(book['book_id'])">Delete</button></td>
         </tr>
       </tbody>
     </table>
@@ -437,10 +438,10 @@
           
           <form ng-submit="updateUser()">
             <strong>Update details</strong>
-            <div class="form-group">
+<!--             <div class="form-group">
               <label for="user_id">User ID - Remove when Login is implemented properly</label>
               <input type="text" class="form-control" id="user_id" ng-model="updateUser.user_id">
-            </div>
+            </div> -->
 
             <div class="form-group">
               <label for="email">Email</label>
@@ -459,9 +460,13 @@
               <input type="text" class="form-control" id="location" ng-model="updateUserForm.location">
             </div>
             <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+
+          <br><p><strong>Delete account</strong>
+          <br>Account deletion is permanent</p>
+          <p><button type="button" class="btn btn-danger btn-sm" ng-click="deleteUser()">Delete Account</button></p>
         </div>
 
-        {{ updateUserForm.user_id }}
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
@@ -506,6 +511,10 @@
     </div>
   </div>
   <!-- End of My Listings modal -->
+
+  <form>
+    <input type="hidden" ng-model="deleteBookForm.hidden">
+  </form>
 
 </body>
 
