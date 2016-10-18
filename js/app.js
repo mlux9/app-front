@@ -5,8 +5,10 @@ var bookSwapp = angular.module('bookSwapp', [ 'ui.bootstrap', 'ngAnimate' ]);
 
 bookSwapp.controller('homeCtrl', ['$scope', '$http', 
 	function($scope, $http) {
+		/*** Empty variables - filled later ***/
+		$scope.blistings = {};
 
-		// User account - totally insecure, for testing
+		/*** User Account ***/
 		$scope.currentUser = {
 			user_id: "",
 			email: "",
@@ -18,9 +20,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			return $scope.currentUser.logged_in;
 		}
 
-		$scope.bookData = {};
-
-		// Login
 		$scope.loginForm = {};
 		$scope.processLogin = function() {
 			$http({
@@ -30,14 +29,13 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
 				var res = response.data;
-				console.log(res);
-				if (res.hasOwnProperty('message')) {
+				if (res.hasOwnProperty('message')) { // Login successful
 					$scope.currentUser.user_id = res.user_id;
 					$scope.currentUser.email = res.email;
 					$scope.currentUser.logged_in = true;
 					$scope.currentUser.token = res.token;
-					console.log($scope.currentUser);
-					$scope.getBooksByUser($scope.currentUser.user_id);
+
+					$scope.getListingsByUser($scope.currentUser.user_id);
 				}
 				$('#loginModal').modal('hide');		
 			}, function errorCallback(response) {
@@ -52,7 +50,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			$scope.currentUser.token = "";
 		}
 
-		// Registration
 		$scope.registerForm = {};
 		$scope.processRegistration = function() {
 			$http({
@@ -61,8 +58,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				data: $.param($scope.registerForm),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
-				var res = response.data;
-				console.log(response);
 				$scope.updateUserList();
 				$('#registerModal').modal('hide');				
 			}, function errorCallback(response) {
@@ -70,7 +65,38 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			});
 		};
 
-		// Add book
+		$scope.updateUserForm = {};
+		$scope.updateUser = function() {
+			var user_id = $scope.currentUser.user_id;
+			$scope.updateUserForm.token = $scope.currentUser.token;
+
+			$http({
+				method: 'POST',
+				url: 'http://bookswapp.apps.mlux.me/api/user/update/'+user_id,
+				data: $.param($scope.updateUserForm),
+				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+			}).then(function successCallback(response) {
+				$scope.updateUserList();
+				$scope.clearForm($scope.updateUserForm);
+				$('#updateUserModal').modal('hide');
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		};
+
+		$scope.updateUserList = function() {
+			$http({
+				method: 'GET',
+				url: 'http://bookswapp.apps.mlux.me/api/user/list'
+			}).then(function successCallback(response) {
+				$scope.userList = response.data;
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		}
+
+		/*** Modifying Books ***/
+		$scope.bookData = {};
 		$scope.addBookForm = {};
 		$scope.addBook = function() {
 			$scope.addBookForm.token = $scope.currentUser.token;
@@ -82,40 +108,54 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			}).then(function successCallback(response) {
 				var res = response.data;
 				$scope.clearForm($scope.addBookForm);
-				$scope.updateBookList();
-				$scope.updateListings();
-				console.log($scope.selectedType);
-				$scope.updateSelectedBookList($scope.selectedType);
-				$scope.updateSelectedBookList('all');
-				$scope.selectType($scope.selectedType);
+				$scope.getListings();
+				$scope.getSelectedListings($scope.selectedType);
 				$('#addBookModal').modal('hide');
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
 		};
 
-		// Delete book
 		$scope.deleteBook = function(book_id) {
-			// data: $.param($scope.deleteBookForm),
-			// console.log($.param({ token: $scope.currentUser.token }))
 			$http({
 				method: 'POST',
 				url: 'http://bookswapp.apps.mlux.me/api/books/delete/'+book_id,
 				data: $.param({ token: $scope.currentUser.token }),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
-				var res = response.data;
-				$scope.updateBookList();
-				$scope.updateListings();
-				$scope.updateSelectedBookList($scope.selectedType);
+				$scope.getListings();
+				$scope.getSelectedListings($scope.selectedType);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
 		};
 
+		$scope.getListing = function(book_id) {
+			$http({
+				method: 'GET',
+				url: 'http://bookswapp.apps.mlux.me/api/booklistings/'+book_id
+			}).then(function successCallback(response) {
+				$scope.blisting = response.data;
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		}
+
+		$scope.getListings = function() {
+			$http({
+				method: 'GET',
+				url: 'http://bookswapp.apps.mlux.me/api/booklistings'
+			}).then(function successCallback(response) {
+				$scope.blistings = response.data;
+				$scope.selectedListings = $scope.blistings;
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		}
+
 		$scope.isMyBook = function(book_id) {
-			for (var i = 0; i < ($scope.listings).length; i++) {
-				var listing = $scope.listings[i];
+			for (var i = 0; i < ($scope.blistings).length; i++) {
+				var listing = $scope.blistings[i];
 				if (listing['book_id'] === book_id) {
 					return (listing['user_id'] === $scope.currentUser.user_id);
 				}
@@ -132,9 +172,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
 				var res = response.data;
-				$scope.updateBookList();
-				$scope.updateListings();
-				$scope.updateSelectedBookList($scope.selectedType);
+				$scope.getListings();
+				$scope.getSelectedListings($scope.selectedType);
 				$scope.updateUserList();
 				$scope.processLogout();
 				$('#updateUserModal').modal('hide');
@@ -143,70 +182,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			});
 		}
 
-		// Getting list of books
-		$http({
-			method: 'GET',
-			url: 'http://bookswapp.apps.mlux.me/api/books/list/all'
-		}).then(function successCallback(response) {
-			$scope.allBooks = response.data;
-			$scope.selectedBookList = $scope.allBooks;
-		}, function errorCallback(response) {
-			console.log('Errored out: ' + JSON.stringify(response));
-		});
-
-		// Getting list of users
-		$http({
-			method: 'GET',
-			url: 'http://bookswapp.apps.mlux.me/api/user/list'
-		}).then(function successCallback(response) {
-			$scope.userList = response.data;
-		}, function errorCallback(response) {
-			console.log('Errored out: ' + JSON.stringify(response));
-		});
-
-		$scope.updateUserList = function() {
-			$http({
-				method: 'GET',
-				url: 'http://bookswapp.apps.mlux.me/api/user/list'
-			}).then(function successCallback(response) {
-				$scope.userList = response.data;
-			}, function errorCallback(response) {
-				console.log('Errored out: ' + JSON.stringify(response));
-			});
-		}
-
-		$scope.updateBookList = function() {
-			$http({
-				method: 'GET',
-				url: 'http://bookswapp.apps.mlux.me/api/books/list/all'
-			}).then(function successCallback(response) {
-				$scope.allBooks = response.data;
-			}, function errorCallback(response) {
-				console.log('Errored out: ' + JSON.stringify(response));
-			});
-		}
-
-		$scope.updateListings = function() {
-			$http({
-				method: 'GET',
-				url: 'http://bookswapp.apps.mlux.me/api/listings'
-			}).then(function successCallback(response) {
-				$scope.listings = response.data;
-			}, function errorCallback(response) {
-				console.log('Errored out: ' + JSON.stringify(response));
-			});
-		}
-
-		// Getting book listings
-		$http({
-			method: 'GET',
-			url: 'http://bookswapp.apps.mlux.me/api/listings'
-		}).then(function successCallback(response) {
-			$scope.listings = response.data;
-		}, function errorCallback(response) {
-			console.log('Errored out: ' + JSON.stringify(response));
-		});
-
 		$scope.getBook = function(book_id) {
 			$scope.bookData = {};
 			$http({
@@ -214,8 +189,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 				url: 'http://bookswapp.apps.mlux.me/api/books/'+book_id
 			}).then(function successCallback(response) {
 				$scope.bookData = response.data;
-				// console.log("getBook called");
-				// console.log($scope.bookData);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -233,75 +206,32 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			});
 		}
 
-		$scope.selectedType = 'all';
-
 		// Book list filtering
-		$scope.updateSelectedBookList = function(type) {
+		$scope.getSelectedListings = function(type) {
 			if (type === 'all') {
-				$scope.selectedBookList = $scope.allBooks;
+				$scope.selectedListings = $scope.blistings;
 			} else {
-				$scope.selectedBookList = [];
-				for (var i = 0; i < ($scope.allBooks).length; i++) {
-					var book = $scope.allBooks[i];
-					if (book['trans_type'] === type) {
-						($scope.selectedBookList).push(book);
+				$scope.selectedListings = [];
+				for (var i = 0; i < ($scope.blistings).length; i++) {
+					var listing = $scope.blistings[i];
+					if (listing['trans_type'] === type) {
+						($scope.selectedListings).push(listing);
 					}
 				}
 			}
 		}
 
-		$scope.getBooksByUser = function(user_id) {
-			$scope.userBookList = [];
-			for (var i = 0; i < ($scope.listings).length; i++) {
-				var book = $scope.listings[i];
-				if (book['user_id'] === user_id) {
-					// console.log("My book: " + book['book_id']);
-					// $scope.getBook(book['book_id']);
-					// console.log("My book data: ");
-					// console.log($scope.bookData);
-					var res = $scope.getBookById(book['book_id']);
-					console.log(res);
-					($scope.userBookList).push(res);
+		$scope.getListingsByUser = function(user_id) {
+			$scope.userListings = [];
+			for (var i = 0; i < ($scope.blistings).length; i++) {
+				var listing = $scope.blistings[i];
+				if (listing['user_id'] === user_id) {
+					($scope.userListings).push(listing);
 				}
 			}
 		}
 
-		$scope.getBookById = function(book_id) {
-			for (var i = 0; i < ($scope.allBooks).length; i++) {
-				var book = $scope.allBooks[i];
-				if (book['book_id'] === book_id) {
-					return book;
-				}
-			}
-		}
-
-		$scope.updateUserForm = {};
-		$scope.updateUser = function() {
-			var user_id = $scope.currentUser.user_id;
-			$scope.updateUserForm.token = $scope.currentUser.token;
-
-			$http({
-				method: 'POST',
-				url: 'http://bookswapp.apps.mlux.me/api/user/update/'+user_id,
-				data: $.param($scope.updateUserForm),
-				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
-			}).then(function successCallback(response) {
-				var res = response.data;
-				// $scope.updateBookList();
-				// Update user details modal when implemented ?
-				console.log(res);
-				$scope.updateUserList();
-
-				// Clear form
-				$scope.updateUser.user_id = "";
-				$scope.clearForm($scope.updateUserForm);
-
-				$('#updateUserModal').modal('hide');
-			}, function errorCallback(response) {
-				console.log('Errored out: ' + JSON.stringify(response));
-			});
-		};
-
+		// Clears all fields in a form 
 		$scope.clearForm = function(formObject) {
 			for (field in formObject) {
 				if (formObject.hasOwnProperty(field)) {
@@ -310,11 +240,14 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 			}
 		}
 
+		// Filtering books table
+		$scope.selectedType = 'all';
 		$scope.selectType = function(type) {
 			$scope.selectedType = type;
-			$scope.updateSelectedBookList(type);
+			$scope.getSelectedListings(type);
 		};
 
+		// Show modals 
 		$scope.showUserTable = function(func) {
 			$('#bookListTable').hide();
 			$('#bookTable').hide();
@@ -338,16 +271,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 		}
 
 		$scope.showBookDetailsModal = function() {
-			// $scope.getBook(book_id);
-			// console.log("THIS ONE ");
-			// console.log($scope.bookData);
-
-			// $modal.open({
-			// 	templateUrl: 'bookData.html',
-			// 	controller: 'modalController',
-			// 	scope: $scope
-			// });
-
 			$('#bookDetailsModal').modal('show');
 		}
 
@@ -357,15 +280,16 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http',
 		}
 
 		$scope.showMyListingsModal = function(func) {
-			$scope.getBooksByUser($scope.currentUser.user_id);
+			$scope.getListingsByUser($scope.currentUser.user_id);
 			$('#myListingsModal').modal();
 		}
+
+		/*** Functions to call on page load ***/
+		$scope.getListings();
+		$scope.getSelectedListings();
+		$scope.updateUserList();
 	}
 ]);
-
-// bookSwapp.controller('modalController', ['$scope', function($scope) {
-    
-// }]);
 
 $(document).ready(function() {
     $("#userTable").hide();

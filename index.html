@@ -58,7 +58,7 @@
     <div class="btn-group" role="group" aria-label="...">
       <button type="button" class="btn btn-default" ng-click="showBookTable()">Books</button>
       <button type="button" class="btn btn-default" ng-click="showUserTable()">Users</button>
-      <button type="button" class="btn btn-default" ng-click="showBookListTable()">Book List</button>
+      <!-- <button type="button" class="btn btn-default" ng-click="showBookListTable()">Book List</button> -->
     </div>
 
     <strong ng-if="!isLoggedIn()">Not logged in</strong>
@@ -88,9 +88,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="book in selectedBookList">
+        <tr ng-repeat="book in selectedListings">
           <td>{{ book['book_id'] }}</td>
-          <td><a data-toggle="modal" ng-click="getBook(book['book_id']); showBookDetailsModal()">{{ book['name'] }}</td>
+          <td><a data-toggle="modal" ng-click="getListing(book['book_id']); showBookDetailsModal()">{{ book['name'] }}</td>
           <td>${{ book['price'] | number : 2 }}</td>
           <td>{{ book['status'] }}</td>
           <td>{{ book['trans_type'] }}</td>
@@ -243,7 +243,7 @@
               <input type="text" class="form-control" id="author" ng-model="addBookForm.author">
             </div>
             <div class="form-group">
-              <label for="isbn">ISBN</label>
+              <label for="isbn">ISBN (Optional)</label>
               <input type="text" class="form-control" id="isbn" ng-model="addBookForm.isbn">
             </div>
             <div class="form-group">
@@ -251,7 +251,7 @@
               <input type="text" class="form-control" id="course" ng-model="addBookForm.prescribed_course">
             </div>
             <div class="form-group">
-              <label for="edition">Edition</label>
+              <label for="edition">Edition (Optional)</label>
               <input type="text" class="form-control" id="edition" ng-model="addBookForm.edition">
             </div>
             <div class="form-group">
@@ -272,24 +272,24 @@
                 <option value="3">Trading</option>
               </select>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="status">Status</label>
               <select class="form-control" name="status" ng-model="addBookForm.status">
                 <option value="1">Available</option>
                 <option value="2">Pending</option>
                 <option value="3">Sold</option>
               </select>
-            </div>
+            </div> -->
             <div class="form-group">
               <label for="price">Price</label>
               <input type="text" class="form-control" id="price" ng-model="addBookForm.price">
             </div>
-            <div class="form-group">
+<!--             <div class="form-group">
               <label for="margin">Margin</label>
               <input type="text" class="form-control" id="margin" ng-model="addBookForm.margin">
-            </div>
+            </div> -->
             <div class="form-group">
-              <label for="description">Description</label>
+              <label for="description">Description (Optional)</label>
               <textarea class="form-control" rows="5" id="description" ng-model="addBookForm.description"></textarea>
             </div>
 
@@ -314,59 +314,73 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Book Details</h4>
+          <h4 class="modal-title">Book Listing</h4>
         </div>
         <div class="modal-body">
 
+          <h5><strong>Book Details</strong></h5>
           <table class="table table-bordered table-hover">
             <tbody>
               <tr>
                 <th width="20%">Name</th>
-                <td>{{ bookData['name'] }}</td>
+                <td>{{ blisting['name'] }}</td>
               </tr>
               <tr>
                 <th width="20%">Author</th>
-                <td>{{ bookData['author'] }}</td>
+                <td>{{ blisting['author'] }}</td>
               </tr>
               <tr>
                 <th width="20%">ISBN</th>
-                <td>{{ bookData['isbn'] }}</td>
+                <td>{{ blisting['isbn'] }}</td>
               </tr>
               <tr>
                 <th width="20%">Course</th>
-                <td>{{ bookData['course'] }}</td>
+                <td>{{ blisting['course'] }}</td>
               </tr>
               <tr>
                 <th width="20%">Edition</th>
-                <td>{{ bookData['edition'] }}</td>
+                <td>{{ blisting['edition'] }}</td>
               </tr>
               <tr>
                 <th width="20%">Condition</th>
-                <td>{{ bookData['condition'] }}</td>
+                <td>{{ blisting['condition'] }}</td>
               </tr>
               <tr>
                 <th width="20%">Transaction type</th>
-                <td>{{ bookData['trans_type'] }}</td>
+                <td>{{ blisting['trans_type'] }}</td>
               </tr>
-              <tr>
+<!--               <tr>
                 <th width="20%">Status</th>
-                <td>{{ bookData['status'] }}</td>
-              </tr>
+                <td>{{ blisting['status'] }}</td>
+              </tr> -->
               <tr>
                 <th width="20%">Price</th>
-                <td>{{ bookData['price'] }}</td>
+                <td>{{ blisting['price'] }}</td>
               </tr>
-              <tr>
+<!--               <tr>
                 <th width="20%">Margin</th>
-                <td>{{ bookData['margin'] }}</td>
-              </tr>
+                <td>{{ blisting['margin'] }}</td>
+              </tr> -->
               <tr>
                 <th width="20%">Description</th>
-                <td>{{ bookData['description'] }}</td>
+                <td>{{ blisting['description'] }}</td>
               </tr>
             </tbody>
           </table>
-
+          <table class="table table-bordered table-hover">
+            <tbody>
+              <h5><strong>Listing Details</strong></h5>
+              <tr>
+                <th width="20%">Date</th>
+                <td>{{ blisting['date'] }}</td>
+              </tr>
+              <tr>
+                <th width="20%">Listed by</th>
+                <td>{{ blisting['email'] }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button ng-if="!isMyBook(blisting['book_id'])" type="button" class="btn btn-success" ngclick="">Buy</button>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -496,7 +510,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="book in userBookList">
+              <tr ng-repeat="book in userListings">
                 <td>{{ book['name'] }}</a></td>
                 <td>Buttons</td>
               </tr>
@@ -511,10 +525,6 @@
     </div>
   </div>
   <!-- End of My Listings modal -->
-
-  <form>
-    <input type="hidden" ng-model="deleteBookForm.hidden">
-  </form>
 
 </body>
 
