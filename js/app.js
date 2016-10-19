@@ -104,7 +104,9 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 			}).then(function success(response) {
 				console.log('response: ' + JSON.stringify(response));
 				var data = response.data;
+				console.log('data.length = ' + data.length);
 				if (data.length > 0) {
+					console.log('showing notifs');
 					$('#notifs').show();
 				}
 			}, function error(err) {
@@ -112,13 +114,13 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 			});
 		};
 
-		// setup checking notifications every 10 seconds
+		// setup checking notifications every 2 seconds
 		$interval(function() {
 			if ($scope.isLoggedIn()) {
 				//console.log('checking notifications. your user id = ' + $scope.currentUser.user_id);
 				checkNotifications();
 			}
-		}, 10000);
+		}, 2000);
 
 		/** Modifying Books */
 		$scope.bookData = {};
