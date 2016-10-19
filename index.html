@@ -144,6 +144,12 @@
 
   </div>
 
+  <!-- Notifications alert -->
+  <div class="alert alert-dismissible alert-info notifications" id="notifs">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <strong>Heads up!</strong> This <a href="#" class="alert-link">alert needs your attention</a>, but it's not super important.
+  </div>
+
   <!-- Login modal -->
   <div class="modal fade" id="loginModal">
     <div class="modal-dialog">
@@ -380,7 +386,11 @@
               </tr>
             </tbody>
           </table>
-          <button ng-if="!isMyBook(blisting['book_id'])" type="button" class="btn btn-success" ngclick="">Buy</button>
+          <span ng-if="isLoggedIn()">
+            <button ng-if="!isMyBook(blisting['book_id'])" type="button" class="btn btn-success" ng-click="sendRequest(blisting['book_id'])">{{ blisting['trans_type'] === 'sell' ? 'Buy This Book' : 'Sell This Book' }}</button>
+            <span ng-if="isMyBook(blisting['book_id'])">This is your own listing.</span>
+          </span>
+          <span ng-if="!isLoggedIn()" class="error">You must be logged in to respond to this listing.</span>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -16,3 +16,13 @@
 .breadcrumb-item.active {
 	font-size: 1.35em;
 }
+
+.error {
+	color: red;
+}
+
+.notifications {
+	position: absolute;
+	left: 30px;
+	bottom: 10px;
+}
