@@ -127,6 +127,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 		$scope.addBookForm = {};
 		$scope.addBook = function() {
 			$scope.addBookForm.token = $scope.currentUser.token;
+			// $scope.addBookForm.transaction = "sell";
 			$http({
 				method: 'POST',
 				url: 'http://bookswapp.apps.mlux.me/api/books/create',
@@ -142,6 +143,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
 		};
+
+		
 
 		$scope.deleteBook = function(book_id) {
 			$http({
