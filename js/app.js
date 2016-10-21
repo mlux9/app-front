@@ -77,7 +77,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
 				$scope.updateUserList();
-				$scope.clearForm($scope.updateUserForm);
+				clearForm($scope.updateUserForm);
 				$('#updateUserModal').modal('hide');
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
@@ -134,7 +134,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
 				var res = response.data;
-				$scope.clearForm($scope.addBookForm);
+				clearForm($scope.addBookForm);
 				$scope.getListings();
 				$scope.getSelectedListings($scope.selectedType);
 				$('#addBookModal').modal('hide');
@@ -152,6 +152,26 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 			}).then(function successCallback(response) {
 				$scope.getListings();
 				$scope.getSelectedListings($scope.selectedType);
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		};
+
+		$scope.updateBook = function(book_id) {
+			$scope.updateBookForm.token = $scope.currentUser.token;
+			$http({
+				method: 'POST',
+				url: 'http://bookswapp.apps.mlux.me/api/books/update/'+book_id,
+				data: $.param($scope.updateBookForm),
+				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+			}).then(function successCallback(response) {
+				var res = response.data;
+				console.log(res);
+				clearForm($scope.updateBookForm);
+				$scope.updateBookForm = null;
+				$scope.getListings();
+				$scope.getSelectedListings($scope.selectedType);
+				$('#updateBookModal').modal('hide');
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
@@ -274,13 +294,14 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 		};
 
 		// Clears all fields in a form 
-		$scope.clearForm = function(formObject) {
+		var clearForm = function(formObject) {
 			for (field in formObject) {
 				if (formObject.hasOwnProperty(field)) {
-					formObject[field] = "";
+					formObject[field] = null;
 				}
 			}
 		};
+
 
 		// Filtering books table
 		$scope.selectedType = 'all';
@@ -325,6 +346,11 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 			$scope.getListingsByUser($scope.currentUser.user_id);
 			$('#myListingsModal').modal();
 		};
+
+		$scope.showUpdateBookModal = function(book_id) {
+			$scope.updateBookID = book_id;
+			$('#updateBookModal').modal();
+		}
 
 		/*** Functions to call on page load ***/
 		$scope.getListings();
