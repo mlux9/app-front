@@ -32,7 +32,7 @@
         <ul class="nav navbar-nav">
           <li class="active"><a href="#" ng-click="">Home</a></li>
           <li><a data-toggle="modal" href="#aboutModal" ng-click="">About</a></li>
-          <li><a data-toggle="modal" href="#registerModal" ng-click="">Register</a></li>
+          <li ng-if="!isLoggedIn()"><a data-toggle="modal" href="#registerModal" ng-click="">Register</a></li>
           <li ng-if="!isLoggedIn()"><a data-toggle="modal" href="#loginModal" ng-click="">Login</a></li>
           <li ng-if="isLoggedIn()"><a href="#" ng-click="processLogout()">Logout</a></li>
         </ul>
