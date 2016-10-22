@@ -88,9 +88,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="book in selectedListings">
+        <tr ng-repeat="book in selectedListings" class="hover-hand" data-toggle="modal" ng-click="getListing(book['book_id']); showBookDetailsModal()">
           <td>{{ book['book_id'] }}</td>
-          <td><a data-toggle="modal" ng-click="getListing(book['book_id']); showBookDetailsModal()">{{ book['name'] }}</td>
+          <td><a>{{ book['name'] }}</td>
           <td>${{ book['price'] | number : 2 }}</td>
           <td>{{ book['status'] }}</td>
           <td>{{ book['trans_type'] }}</td>

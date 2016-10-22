@@ -26,3 +26,8 @@
 	left: 30px;
 	bottom: 10px;
 }
+
+.hover-hand:hover {
+	cursor: pointer;
+	cursor: hand;
+}
