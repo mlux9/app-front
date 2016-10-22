@@ -7,6 +7,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 	function($scope, $http, $interval) {
 		/*** Empty variables - filled later ***/
 		$scope.blistings = {};
+		$scope.blisting = false;
 
 		/*** User Account ***/
 		$scope.currentUser = {
@@ -144,8 +145,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 			});
 		};
 
-		
-
 		$scope.deleteBook = function(book_id) {
 			$http({
 				method: 'POST',
@@ -181,6 +180,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 		};
 
 		$scope.getListing = function(book_id) {
+			// set blisting to false to mark waiting
+			$scope.blisting = false;
 			$http({
 				method: 'GET',
 				url: 'http://bookswapp.apps.mlux.me/api/booklistings/'+book_id

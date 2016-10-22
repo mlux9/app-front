@@ -410,9 +410,15 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Book Listing</h4>
         </div>
-        <div class="modal-body">
+        <div ng-if="!blisting" uib-collapse="blisting" class="modal-body">
+          <div class="spin-wrapper">
+            <i class="glyphicon glyphicon-refresh spinning"></i>
+          </div>
+        </div>
+        <div class="modal-body" ng-if="blisting" uib-collapse="!blisting">
 
           <h5><strong>Book Details</strong></h5>
+
           <table class="table table-bordered table-hover">
             <tbody>
               <tr>
