@@ -38,6 +38,10 @@
 	padding-bottom: 5vh;
 }
 
+.center-text {
+	text-align: center;
+}
+
 .glyphicon.spinning {
     animation: spin 1s infinite linear;
     -webkit-animation: spin2 1s infinite linear;
