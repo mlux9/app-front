@@ -481,7 +481,7 @@
             </tbody>
           </table>
           <span ng-if="isLoggedIn()">
-            <button ng-if="!isMyBook(blisting['book_id'])" type="button" class="btn btn-success" ng-click="sendRequest(blisting['book_id'])">{{ blisting['trans_type'] === 'sell' ? 'Buy This Book' : 'Sell This Book' }}</button>
+            <button ng-if="!isMyBook(blisting['book_id'])" type="button" class="btn btn-success" ng-click="sendRequest(blisting['book_id'])" ng-disabled="requested">{{ blisting['trans_type'] === 'sell' ? 'Buy This Book' : 'Sell This Book' }}</button>
             <span ng-if="isMyBook(blisting['book_id'])">This is your own listing.</span>
           </span>
           <span ng-if="!isLoggedIn()" class="error">You must be logged in to respond to this listing.</span>
@@ -623,6 +623,7 @@
               </tr>
             </tbody>
           </table>
+        </div>
           
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -632,6 +633,25 @@
     </div>
   </div>
   <!-- End of My Listings modal -->
+
+  <!-- Confirmation that a buy/sell request was sent -->
+  <div class="modal fade" id="requestSentModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Request Sent</h4>
+        </div>
+        <div class="modal-body">
+          <p>A request has been sent to the user who listed this entry.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of modal -->
 
 </body>
 

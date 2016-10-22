@@ -3,11 +3,12 @@
  */
 var bookSwapp = angular.module('bookSwapp', [ 'ui.bootstrap', 'ngAnimate' ]);
 
-bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
-	function($scope, $http, $interval) {
+bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
+	function($scope, $http, $interval, $timeout) {
 		/*** Empty variables - filled later ***/
 		$scope.blistings = {};
 		$scope.blisting = false;
+		$scope.requested = false;
 
 		/*** User Account ***/
 		$scope.currentUser = {
@@ -284,6 +285,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 
 		/** Sends a request to respond to a listing */
 		$scope.sendRequest = function(bookId) {
+			$scope.requested = true;
+
 			var url = 'http://bookswapp.apps.mlux.me/api/request/' + bookId;
 			$http({
 				method: 'POST',
@@ -291,7 +294,9 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval',
 				data: $.param({ token: $scope.currentUser.token }),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
-				console.log('response: ' + JSON.stringify(response));
+				$scope.requested = false;
+				$('#bookDetailsModal').modal('hide');
+				$('#requestSentModal').modal();
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
