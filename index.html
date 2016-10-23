@@ -195,7 +195,7 @@
               <button type="button" class="btn btn-success btn-sm" ng-click="showUpdateBookModal(book['book_id'])">Edit</button>
           </td>
         </tr>
-        <tr ng-show="!userListings || !userListings.length">
+        <tr ng-show="!userWishlist || !userWishlist.length">
           <td colspan="2" class="center-text">You have no books on your wishlist</td>
         </tr>
       </tbody>
@@ -218,7 +218,7 @@
           <td>{{ item['buyer_id'] === currentUser.user_id ? 'You' : item['other_email'] }}</a></td>
           <td>{{ item['seller_id'] === currentUser.user_id ? 'You' : item['other_email'] }}</a></td>
         </tr>
-        <tr ng-show="!userListings || !userListings.length">
+        <tr ng-show="!userHistory || !userHistory.length">
           <td colspan="4" class="center-text">You have no history</td>
         </tr>
       </tbody>
