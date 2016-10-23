@@ -26,8 +26,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		$scope.processLogin = function() {
 			$http({
 				method: 'POST',
+				// url: 'http://bookswapp.apps.mlux.me/api/user/login',
 				url: 'http://bookswapp.apps.mlux.me/api/user/login',
-				// url: 'http://localhost:5000/api/user/login',
 				data: $.param($scope.loginForm),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
@@ -130,9 +130,10 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		$scope.addBookForm = {};
 		$scope.addBook = function() {
 			$scope.addBookForm.token = $scope.currentUser.token;
-			// $scope.addBookForm.transaction = "sell";
+			$scope.addBookForm.transaction = "sell";
 			$http({
 				method: 'POST',
+				// url: 'http://bookswapp.apps.mlux.me/api/books/create',
 				url: 'http://bookswapp.apps.mlux.me/api/books/create',
 				data: $.param($scope.addBookForm),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -151,8 +152,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$scope.addWishlistForm.token = $scope.currentUser.token;
 			$http({
 				method: 'POST',
+				// url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/create',
 				url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/create',
-				// url: 'http://localhost:5000/api/user/wishlist/create',
 				data: $.param($scope.addWishlistForm),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
@@ -217,7 +218,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$http({
 				method: 'GET',
 				url: 'http://bookswapp.apps.mlux.me/api/booklistings'
-				// url: 'http://localhost:5000/api/booklistings'
+				// url: 'http://bookswapp.apps.mlux.me/api/booklistings'
 			}).then(function successCallback(response) {
 				$scope.blistings = response.data;
 				$scope.selectedListings = $scope.blistings;
@@ -329,7 +330,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$http({
 				method: 'POST',
 				url: 'http://bookswapp.apps.mlux.me/api/user/transactions/'+user_id,
-				// url: 'http://localhost:5000/api/user/transactions/'+user_id,
+				// url: 'http://bookswapp.apps.mlux.me/api/user/transactions/'+user_id,
 				data: $.param({ token: $scope.currentUser.token }),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
@@ -347,7 +348,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$http({
 				method: 'GET',
 				url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/'+user_id,
-				// url: 'http://localhost:5000/api/user/wishlist/'+user_id,
+				// url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/'+user_id,
 			}).then(function successCallback(response) {
 				$scope.userWishlist = response.data;
 				console.log(response);
