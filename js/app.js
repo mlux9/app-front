@@ -26,8 +26,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		$scope.processLogin = function() {
 			$http({
 				method: 'POST',
-				// url: 'http://bookswapp.apps.mlux.me/api/user/login',
-				url: 'http://localhost:5000/api/user/login',
+				url: 'http://bookswapp.apps.mlux.me/api/user/login',
+				// url: 'http://localhost:5000/api/user/login',
 				data: $.param($scope.loginForm),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
@@ -151,8 +151,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$scope.addWishlistForm.token = $scope.currentUser.token;
 			$http({
 				method: 'POST',
-				// url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/create',
-				url: 'http://localhost:5000/api/user/wishlist/create',
+				url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/create',
+				// url: 'http://localhost:5000/api/user/wishlist/create',
 				data: $.param($scope.addWishlistForm),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
@@ -216,8 +216,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		$scope.getListings = function() {
 			$http({
 				method: 'GET',
-				// url: 'http://bookswapp.apps.mlux.me/api/booklistings'
-				url: 'http://localhost:5000/api/booklistings'
+				url: 'http://bookswapp.apps.mlux.me/api/booklistings'
+				// url: 'http://localhost:5000/api/booklistings'
 			}).then(function successCallback(response) {
 				$scope.blistings = response.data;
 				$scope.selectedListings = $scope.blistings;
@@ -346,8 +346,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			var user_id = $scope.currentUser.user_id;
 			$http({
 				method: 'GET',
-				// url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/'+user_id,
-				url: 'http://localhost:5000/api/user/wishlist/'+user_id,
+				url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/'+user_id,
+				// url: 'http://localhost:5000/api/user/wishlist/'+user_id,
 			}).then(function successCallback(response) {
 				$scope.userWishlist = response.data;
 				console.log(response);
