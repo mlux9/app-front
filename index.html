@@ -30,7 +30,8 @@
       </div>
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#" ng-click="">Home</a></li>
+          <li class="active"><a href="#" ng-click="showMainPage()">Home</a></li>
+          <li ng-if="isLoggedIn()"><a href="#" ng-click="showUserPage()">User</a></li>
           <li><a data-toggle="modal" href="#aboutModal" ng-click="">About</a></li>
           <li ng-if="!isLoggedIn()"><a data-toggle="modal" href="#registerModal" ng-click="">Register</a></li>
           <li ng-if="!isLoggedIn()"><a data-toggle="modal" href="#loginModal" ng-click="">Login</a></li>
@@ -43,8 +44,13 @@
     </div>
   </nav>
 
+<!--   <div class="container">
+  <button type="button" class="btn btn-default" ng-click="showMainPage()">Home Page</button>
+  <button type="button" class="btn btn-default" ng-click="showUserPage()">User Page</button>
+  </div> -->
+
   <!-- Rest of the page -->
-  <div class="container">
+  <div class="container" id="book_table">
 
     <!-- Breadcrumbs -->
     <ol class="breadcrumb pull-right">
@@ -68,9 +74,9 @@
     <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showUpdateUserModal()">
       <span class="glyphicon glyphicon-user"></span> User
     </button>
-    <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showMyListingsModal()">
-      <span class="glyphicon glyphicon-bookmark"></span> My Listings
-    </button>
+    <!--     <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showMyListingsModal()">
+          <span class="glyphicon glyphicon-bookmark"></span> My Listings
+        </button> -->
 
 
     <div ng-if="showSomething">ofdignsfdoigsn</div>
@@ -84,7 +90,7 @@
           <th width="10%">Price</th>
           <th width="10%">Status</th>
           <th width="10%">Type</th>
-          <td>Action</td>
+          <td width="10%">Action</td>
         </tr>
       </thead>
       <tbody>
@@ -143,7 +149,54 @@
         </tr>
       </tbody>
     </table>
+  
+  </div>
 
+  <!-- User Page -->
+  <div class="container" id="user_page">
+    <strong>My Listings</strong>
+    <table class="table table-bordered table-hover">
+      <thead class="table-head">
+        <tr>
+          <th width="50%">Book</th>
+          <th width="10%">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="book in userListings" class="hover-hand" data-toggle="modal" ng-click="getListing(book['book_id']); showBookDetailsModal()">
+          <td><a>{{ book['name'] }}</a></td>
+          <td><button type="button" class="btn btn-danger btn-sm" ng-click="deleteBook(book['book_id'])">Delete</button>
+              <button type="button" class="btn btn-success btn-sm" ng-click="showUpdateBookModal(book['book_id'])">Edit</button>
+          </td>
+        </tr>
+        <tr ng-show="!userListings || !userListings.length">
+          <td colspan="2" class="center-text">You have no listings</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <strong>My History</strong>
+    <table class="table table-bordered table-hover">
+      <thead class="table-head">
+        <tr>
+          <th width="50%">Book</th>
+          <th width="5%">Status</th>
+          <th width="10%">Buyer</th>
+          <th width="10%">Seller</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in userHistory">
+          <td>{{ item['book_name'] }}</a></td>
+          <td>{{ item['status'] }}</a></td>
+          <td>{{ item['buyer_id'] === currentUser.user_id ? 'You' : item['other_email'] }}</a></td>
+          <td>{{ item['seller_id'] === currentUser.user_id ? 'You' : item['other_email'] }}</a></td>
+        </tr>
+        <tr ng-show="!userListings || !userListings.length">
+          <td colspan="2" class="center-text">You have no listings</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- Notifications alert -->
@@ -652,6 +705,8 @@
     </div>
   </div>
   <!-- End of modal -->
+
+  
 
 </body>
 

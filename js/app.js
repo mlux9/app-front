@@ -27,6 +27,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$http({
 				method: 'POST',
 				url: 'http://bookswapp.apps.mlux.me/api/user/login',
+				// url: 'http://localhost:5000/api/user/login',
 				data: $.param($scope.loginForm),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
@@ -38,6 +39,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 					$scope.currentUser.token = res.token;
 
 					$scope.getListingsByUser($scope.currentUser.user_id);
+
+					$scope.getHistory();
 				}
 				$('#loginModal').modal('hide');		
 			}, function errorCallback(response) {
@@ -302,6 +305,24 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			});
 		};
 
+		$scope.getHistory = function() {
+			$scope.userHistory = [];
+			var user_id = $scope.currentUser.user_id;
+			$http({
+				method: 'POST',
+				url: 'http://bookswapp.apps.mlux.me/api/user/transactions/'+user_id,
+				// url: 'http://localhost:5000/api/user/transactions/'+user_id,
+				data: $.param({ token: $scope.currentUser.token }),
+				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+			}).then(function successCallback(response) {
+				$scope.userHistory = response.data;
+				console.log(response);
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+
+		}
+
 		// Clears all fields in a form 
 		var clearForm = function(formObject) {
 			for (field in formObject) {
@@ -361,6 +382,15 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$('#updateBookModal').modal();
 		}
 
+		$scope.showUserPage = function() {
+			$('#book_table').hide();
+			$('#user_page').show();
+		}
+		$scope.showMainPage = function() {
+			$('#book_table').show();
+			$('#user_page').hide();
+		}
+
 		/*** Functions to call on page load ***/
 		$scope.getListings();
 		$scope.getSelectedListings();
@@ -371,4 +401,5 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 $(document).ready(function() {
     $("#userTable").hide();
     $("#bookListTable").hide();
+    $("#user_page").hide();
 });
