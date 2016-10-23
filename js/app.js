@@ -26,8 +26,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		$scope.processLogin = function() {
 			$http({
 				method: 'POST',
-				url: 'http://bookswapp.apps.mlux.me/api/user/login',
-				// url: 'http://localhost:5000/api/user/login',
+				// url: 'http://bookswapp.apps.mlux.me/api/user/login',
+				url: 'http://localhost:5000/api/user/login',
 				data: $.param($scope.loginForm),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
@@ -39,8 +39,6 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 					$scope.currentUser.token = res.token;
 
 					$scope.getListingsByUser($scope.currentUser.user_id);
-
-					$scope.getHistory();
 				}
 				$('#loginModal').modal('hide');		
 			}, function errorCallback(response) {
@@ -149,6 +147,25 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			});
 		};
 
+		$scope.addWishlist = function() {
+			$scope.addWishlistForm.token = $scope.currentUser.token;
+			$http({
+				method: 'POST',
+				// url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/create',
+				url: 'http://localhost:5000/api/user/wishlist/create',
+				data: $.param($scope.addWishlistForm),
+				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+			}).then(function successCallback(response) {
+				var res = response.data;
+				clearForm($scope.addWishlistForm);
+				$scope.getListings();
+				$scope.getSelectedListings($scope.selectedType);
+				$('#addWishlistModal').modal('hide');
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
+		};
+
 		$scope.deleteBook = function(book_id) {
 			$http({
 				method: 'POST',
@@ -199,7 +216,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		$scope.getListings = function() {
 			$http({
 				method: 'GET',
-				url: 'http://bookswapp.apps.mlux.me/api/booklistings'
+				// url: 'http://bookswapp.apps.mlux.me/api/booklistings'
+				url: 'http://localhost:5000/api/booklistings'
 			}).then(function successCallback(response) {
 				$scope.blistings = response.data;
 				$scope.selectedListings = $scope.blistings;
@@ -280,7 +298,7 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$scope.userListings = [];
 			for (var i = 0; i < ($scope.blistings).length; i++) {
 				var listing = $scope.blistings[i];
-				if (listing['user_id'] === user_id) {
+				if (listing['user_id'] === user_id && listing['trans_type'] === 'sell') {
 					($scope.userListings).push(listing);
 				}
 			}
@@ -315,12 +333,27 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 				data: $.param({ token: $scope.currentUser.token }),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
+				console.log("Getting transaction history");
 				$scope.userHistory = response.data;
 				console.log(response);
 			}, function errorCallback(response) {
 				console.log('Errored out: ' + JSON.stringify(response));
 			});
+		}
 
+		$scope.getWishlist = function() {
+			$scope.userWishlist = [];
+			var user_id = $scope.currentUser.user_id;
+			$http({
+				method: 'GET',
+				// url: 'http://bookswapp.apps.mlux.me/api/user/wishlist/'+user_id,
+				url: 'http://localhost:5000/api/user/wishlist/'+user_id,
+			}).then(function successCallback(response) {
+				$scope.userWishlist = response.data;
+				console.log(response);
+			}, function errorCallback(response) {
+				console.log('Errored out: ' + JSON.stringify(response));
+			});
 		}
 
 		// Clears all fields in a form 
@@ -363,6 +396,10 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 			$('#addBookModal').modal();
 		};
 
+		$scope.showAddWishlistModal = function() {
+			$('#addWishlistModal').modal();
+		}
+
 		$scope.showBookDetailsModal = function() {
 			$('#bookDetailsModal').modal('show');
 		};
@@ -383,6 +420,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		}
 
 		$scope.showUserPage = function() {
+			$scope.getHistory();
+			$scope.getWishlist();
 			$('#book_table').hide();
 			$('#user_page').show();
 		}
