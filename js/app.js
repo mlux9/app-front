@@ -9,6 +9,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		$scope.blistings = {};
 		$scope.blisting = false;
 		$scope.requested = false;
+		$scope.updateBookError = false;
+		$scope.updateBookForm = {};
 
 		/*** User Account ***/
 		$scope.currentUser = {
@@ -105,11 +107,11 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 				method: 'GET',
 				url: url
 			}).then(function success(response) {
-				console.log('response: ' + JSON.stringify(response));
+				//console.log('response: ' + JSON.stringify(response));
 				var data = response.data;
-				console.log('data.length = ' + data.length);
+				//console.log('data.length = ' + data.length);
 				if (data.length > 0) {
-					console.log('showing notifs');
+					//console.log('showing notifs');
 					$('#notifs').show();
 				}
 			}, function error(err) {
@@ -182,11 +184,26 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 		};
 
 		$scope.updateBook = function(book_id) {
-			$scope.updateBookForm.token = $scope.currentUser.token;
+			//$scope.updateBookForm.token = $scope.currentUser.token;
+
+			var fields =  [ 'name', 'author', 'prescribed_course', 'condition',
+				'transaction', 'price', 'isbn, edition, description' ];
+			var form = {
+				token: $scope.currentUser.token
+			};
+			// only send fields that are present
+			for (var i = 0; i < fields.length; i++) {
+				if (typeof $scope.updateBookForm[fields[i]] !== 'undefined')
+					form[fields[i]] = $scope.updateBookForm[fields[i]];
+			}
+
+			console.log('$scope.updateBookForm = ' + JSON.stringify($scope.updateBookForm));
+			console.log('form = ' + JSON.stringify(form));
+
 			$http({
 				method: 'POST',
-				url: 'http://bookswapp.apps.mlux.me/api/books/update/'+book_id,
-				data: $.param($scope.updateBookForm),
+				url: 'http://bookswapp.apps.mlux.me/api/books/update/' + book_id,
+				data: $.param(form),
 				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
 			}).then(function successCallback(response) {
 				var res = response.data;
