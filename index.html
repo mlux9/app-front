@@ -57,29 +57,27 @@
       <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'all') }"><a href="#" ng-click="selectType('all')">All</a></li>
       <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'sell') }"><a href="#" ng-click="selectType('sell')">Selling</a></li>
       <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'buy') }"><a href="#" ng-click="selectType('buy')">Wanted</a></li>
-      <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'swap') }"><a href="#" ng-click="selectType('swap')">Swap</a></li>
+      <!-- <li class="breadcrumb-item" ng-class="{ 'active' : (selectedType === 'swap') }"><a href="#" ng-click="selectType('swap')">Swap</a></li> -->
     </ol>
 
     <!-- Database tables -->
-    <div class="btn-group" role="group" aria-label="...">
+<!--     <div class="btn-group" role="group" aria-label="...">
       <button type="button" class="btn btn-default" ng-click="showBookTable()">Books</button>
       <button type="button" class="btn btn-default" ng-click="showUserTable()">Users</button>
-      <!-- <button type="button" class="btn btn-default" ng-click="showBookListTable()">Book List</button> -->
-    </div>
+      <button type="button" class="btn btn-default" ng-click="showBookListTable()">Book List</button>
+    </div> -->
 
     <strong ng-if="!isLoggedIn()">Not logged in</strong>
-    <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showAddBookModal()">
+    <button ng-if="isLoggedIn()" type="button" class="btn btn-success btn-sm" ng-click="showAddBookModal()">
       <span class="glyphicon glyphicon-plus-sign"></span> Add book
     </button>
-    <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showUpdateUserModal()">
+    <!-- <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showUpdateUserModal()">
       <span class="glyphicon glyphicon-user"></span> User
-    </button>
+    </button> -->
     <!--     <button ng-if="isLoggedIn()" type="button" class="btn btn-success" ng-click="showMyListingsModal()">
           <span class="glyphicon glyphicon-bookmark"></span> My Listings
         </button> -->
 
-
-    <div ng-if="showSomething">ofdignsfdoigsn</div>
 
     <!-- Main table -->
     <table class="table table-bordered table-hover" id="bookTable">
@@ -154,8 +152,12 @@
 
   <!-- User Page -->
   <div class="container" id="user_page">
-    <strong>My Listings</strong>
-    <table class="table table-bordered table-hover">
+    <button style="margin-bottom:1.5em;" ng-if="isLoggedIn()" type="button" class="btn btn-success btn-sm" ng-click="showUpdateUserModal()">
+      <span class="glyphicon glyphicon-user"></span> Update Details
+    </button>
+
+    <h4><strong>My Listings</strong></h4>
+    <table class="table table-bordered table-hover" style="margin-bottom:2.5em;">
       <thead class="table-head">
         <tr>
           <th width="50%">Book</th>
@@ -175,7 +177,7 @@
       </tbody>
     </table>
 
-    <strong>My History</strong>
+    <h4><strong>My History</strong></h4>
     <table class="table table-bordered table-hover">
       <thead class="table-head">
         <tr>
