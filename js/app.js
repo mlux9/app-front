@@ -197,8 +197,8 @@ bookSwapp.controller('homeCtrl', ['$scope', '$http', '$interval', '$timeout',
 					form[fields[i]] = $scope.updateBookForm[fields[i]];
 			}
 
-			console.log('$scope.updateBookForm = ' + JSON.stringify($scope.updateBookForm));
-			console.log('form = ' + JSON.stringify(form));
+			//console.log('$scope.updateBookForm = ' + JSON.stringify($scope.updateBookForm));
+			//console.log('form = ' + JSON.stringify(form));
 
 			$http({
 				method: 'POST',
